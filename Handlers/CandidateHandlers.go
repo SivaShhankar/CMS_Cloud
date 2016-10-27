@@ -27,36 +27,38 @@ type Info struct {
 var Login_User string
 
 // LogOutURL - Sign Out google Account and Redirect it to Home Page
-const LogOutURL = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://cmscloud-145306.appspot.com"
+const LogOutURL = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080"
 
 func Index(w http.ResponseWriter, r *http.Request) {
 
-	// if !validateSession(w, r) {
-	// 	return
-	// }
 	t, _ := template.ParseFiles("Templates/Index.html")
-	fmt.Println("Index Calling")
+	fmt.Println("Index", LoginUserInfo)
 	t.Execute(w, LoginUserInfo)
 }
 
 // Authorize - Validation process
 func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	fmt.Println("test")
-	var err bool
-	session := AppSession
-	if session == nil {
-		http.Redirect(w, r, "/SignOut", http.StatusFound)
+	var ok bool
+	fmt.Println("Session ID For Current Process", SessionID)
+	if SessionID == "" {
+		http.Redirect(w, r, LogOutURL, http.StatusFound)
 		return
 	}
-	Login_User, err = session.Values["UName"].(string) //getUserName(r)
-	fmt.Println(Login_User, err)
-	if !err {
-		http.Redirect(w, r, "/SignOut", http.StatusFound)
+	session, err := SessionStore.New(r, SessionID)
+	if err != nil {
+		fmt.Println("-------------------------------------------")
+		fmt.Println("Error on authorize", err)
+		fmt.Println("-------------------------------------------")
+		http.Redirect(w, r, LogOutURL, http.StatusFound)
 		return
 	}
-	fmt.Println("Validating User", Login_User)
-	if Login_User == "" { //|| AppSession == nil {
-		http.Redirect(w, r, "/SignOut", http.StatusFound)
+	LoginUserInfo, ok = session.Values["UName"].(*models.UserInfo) //session.Values["UName"].(string) //getUserName(r)
+	//fmt.Println(LoginUserInfo, ok)
+	if !ok {
+		fmt.Println("-------------------------------------------")
+		fmt.Println(session.Values["UName"])
+		fmt.Println("-------------------------------------------")
+		http.Redirect(w, r, LogOutURL, http.StatusFound)
 		return
 	}
 	next(w, r)
@@ -100,7 +102,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 			MonthOfExp: "",
 			UserMsg:    "",
 			Operation:  "Insert",
-			LoginUser:  Login_User,
+			LoginUser:  LoginUserInfo.Name,
 		}
 		t.Execute(w, d)
 		// } else {
@@ -152,7 +154,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 			MonthOfExp: "",
 			UserMsg:    "Candidate Details Updated Successfully!",
 			Operation:  "Insert",
-			LoginUser:  Login_User,
+			LoginUser:  LoginUserInfo.Name,
 		}
 
 		t, _ := template.ParseFiles("Templates/Upload.html")
@@ -289,7 +291,7 @@ func Edit(h http.ResponseWriter, r *http.Request) {
 			MonthOfExp: experience[1],
 			UserMsg:    "",
 			Operation:  "Update",
-			LoginUser:  Login_User,
+			LoginUser:  LoginUserInfo.Name,
 		}
 		t.Execute(h, d)
 	}

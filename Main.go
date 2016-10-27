@@ -31,6 +31,9 @@ func main() {
 	// Configure Buckets
 	cloudStorage.Init()
 
+	// Configure Sessions
+	//handlers.Init()
+
 	// Created the routes of this application
 	mux := mux.NewRouter().StrictSlash(false) //http.NewServeMux()
 	mux = routers.SetCandidateRoutes(mux)
