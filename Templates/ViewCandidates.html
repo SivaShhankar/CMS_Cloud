@@ -1,0 +1,246 @@
+<html>
+<head>
+    <title>Upload file</title>
+    <link rel="stylesheet" type="text/css" href="css/ViewCandidates.css">
+    <link rel='stylesheet' type='text/css' href='css/Index.css' />
+
+    <script src="/JS/jquery-3.1.0.min.js"></script>
+
+</head>
+<body>
+    <div id="page">
+        <div id="logo">
+            <h1>
+                <a href="" id="logoLink">Ramarson Content Management System</a></h1>
+        </div>
+        <!-- begin navigation -->
+        <nav id="navigation">
+		<ul>
+            <li><a href="/Index">Home</a></li>
+			<li><a href="/Upload">Upload</a></li>
+			<li><a href="/SignOut">Sign Out</a></li>
+		</ul>
+	</nav>
+        <!-- end navigation -->
+        <div id="content">
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <div class="ClosePopup">
+                        x</div>
+                    <iframe id="doc" style="width: 100%; height: 90%;" name="contentFrame"></iframe>
+                </div>
+            </div>
+            <h2>
+                View candidate information</h2>
+            <div id="searchDiv">
+                <div id="wrapper">
+                    <form name="formSearch" action="/Search">
+                    <div id="searchFieldsWrapper">
+                        <label id="searchLabel">
+                            Search By</label>
+                        <select name="searchType" id="searchType">
+                            <option value="jobcode">JobCode</option>
+                            <option value="name">Name</option>
+                            <option value="location">Location</option>
+                            <option value="qualification">Qualification</option>
+                            <option value="specialization">Specialization</option>
+                            <option value="department">Department</option>
+                        </select>
+                        <input type="Text" name="searchBox" id="searchTextBox" />
+                        <input type="submit" id="searchButton" value="" style="background-image: url(/images/search.png);"
+                            title="click to search" />
+                    </div>
+                    </form>
+                    <form name="formSearch" action="/Filter">
+                    <div id="filterFieldsWrapper">
+                        <label id="filterLabel">
+                            Filter By</label>
+                        <select name="filterType" id="filterType">
+                            <option value="age">Age</option>
+                            <option value="experience">Experience</option>
+                        </select>
+                        <label id="fromLabel">
+                            From</label>
+                        <input type="number" name="from" id="from" min="0" max="50" value="0" />
+                        <label id="toLabel">
+                            To</label>
+                        <input type="number" name="to" id="to" min="0" max="50" value="0" />
+                        <input type="submit" id="filterButton" value="" style="background-image: url(/images/filter.png)"
+                            title="click to filter" />
+                    </div>
+                    </form>
+                </div>
+                <div id="tableDiv">
+                    <table id="tblData">
+                        <tr style="background-color: Orange;">
+                            <th id="viewHeader">
+                            </th>
+                            <th id="editHeader">
+                            </th>
+                            <th id="deleteHeader">
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Age
+                            </th>
+                            <th>
+                                Gender
+                            </th>
+                            <th>
+                                Mobile
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th>
+                                Location
+                            </th>
+                            <th>
+                                Qualification
+                            </th>
+                            <th>
+                                Specialization
+                            </th>
+                            <th>
+                                Department
+                            </th>
+                            <th>
+                                Job Code
+                            </th>
+                            <th>
+                                Position Apply For
+                            </th>
+                            <th>
+                                Experience
+                            </th>
+                            <th style="display: none;">
+                                CV location
+                            </th>
+                            <th>
+                                Source From
+                            </th>
+                        </tr>
+                        {{range .}}
+                        <tr>
+                            <td id="viewSection">
+                                <div class="viewDoc">
+                                    <a style="cursor: pointer;" id="https://storage.cloud.google.com/cmscloud-145306.appspot.com/{{.CloudObject}}">
+                                        <img src="/images/View.png" style="width: 28px; height: 26px;" title="Click to view" />
+                                    </a>
+                                </div>
+                            </td>
+                            <td id="editSection">
+                                <div style="float: left; width: 100%; height: 100%;">
+                                    <a href="/EditData?mobileNumber={{.Mobile}}" id="edit" style="background-image: url(/images/edit.png);"
+                                        title="Click to Edit"></a>
+                                    <input type="hidden" name="MobileID" value="{{.Mobile}}" />
+                                </div>
+                            </td>
+                            <td id="deleteSection">
+                                <div style="float: left; width: 100%; height: 100%;">
+                                    <a href="/Delete?mobileNumber={{.Mobile}}" id="delete" style="background-image: url(/images/delete.gif);"
+                                        title="Click to Delete"></a>
+                                    <input type="hidden" name="hiddenField" value="{{.Mobile}}" />
+                                </div>
+                            </td>
+                            <td>
+                                {{.Name}}
+                            </td>
+                            <td>
+                                {{.Age}}
+                            </td>
+                            <td>
+                                {{.Gender}}
+                            </td>
+                            <td>
+                                {{.Mobile}}
+                            </td>
+                            <td>
+                                {{.Email}}
+                            </td>
+                            <td>
+                                {{.Location}}
+                            </td>
+                            <td>
+                                {{.Qualification}}
+                            </td>
+                            <td>
+                                {{.Specialization}}
+                            </td>
+                            <td>
+                                {{.Department}}
+                            </td>
+                            <td>
+                                {{.JobCode}}
+                            </td>
+                            <td>
+                                {{.Position}}
+                            </td>
+                            <td>
+                                {{.Experience}} Years
+                            </td>
+                            <td style="display: none;">
+                                {{.CvPath}}
+                            </td>
+                            <td>
+                                {{.SourceFrom}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <p>
+                Ramarson Technology Developers LLP.
+            </p>
+        </div>
+    </div>
+</body>
+
+<script>
+
+        var modal = document.getElementById('myModal');
+		var span = document.getElementsByClassName("ClosePopup")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+            $("#doc").attr('src', '');
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                $("#doc").attr('src', '');
+            }
+        }
+		
+		$(document).ready(function () {
+            
+            $(".viewDoc a").live('click', function (e) {
+			
+                var contentId = $(this).attr('id');
+                var iFrame = document.getElementById("doc");
+                $("#doc").attr('src', contentId); 		
+                //alert(contentId);		
+                if (contentId.split('.').pop() == 'pdf') 
+				{
+                    modal.style.display = "block";
+                }
+                else 
+				{ 
+					modal.style.display = "none"; 
+				}                
+            });			
+		});	
+			
+</script>
+
+</html>

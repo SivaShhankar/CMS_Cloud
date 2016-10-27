@@ -1,0 +1,252 @@
+
+body
+{
+    font-family: arial;
+    font-size: 80%;
+    line-height: 1.2em;
+    width: 100%;
+    margin: 0;
+    background: #eee;
+}
+
+#page
+{
+    float: left;
+    margin: 0px;
+    margin-left: 40px;
+    margin-top: 20px;
+    width: 94%;
+}
+
+#logo
+{
+    width: 35%;
+    margin-top: 5px;
+    font-family: georgia;
+    display: inline-block;
+}
+
+h1, h2, h3, h4
+{
+    color: orange;
+    font-weight: normal;
+    line-height: 1.1em;
+    margin: 0 0 .5em 0;
+}
+
+h1
+{
+    font-size: 1.7em;
+}
+h2
+{
+    font-size: 1.5em;
+}
+
+a
+{
+    color: black;
+    text-decoration: none;
+}
+
+a:hover, a:active
+{
+    text-decoration: underline;
+}
+
+#nav
+{
+    float: right;
+    width: 60%;
+    text-align: right;
+    background-color: none;
+}
+
+#nav ul li
+{
+    display: inline-block;
+    height: 62px;
+}
+
+#nav ul li a
+{
+    padding: 20px;
+    background: orange;
+    font-size: 16px;
+    color: white;
+}
+
+#nav ul li a:hover
+{
+    background-color: #ffb424;
+    box-shadow: 0px 1px 1px #666;
+}
+
+#nav ul li a:active
+{
+    background-color: #ff8f00;
+}
+
+#content
+{
+    float: left;
+    width: 100%;
+    background: white;
+    padding: 20px;
+    clear: both;
+}
+
+p
+{
+    line-height: 1em;
+}
+
+#footer
+{
+    margin-bottom: 10px;
+    float: left;
+    width: 100%;
+}
+
+#footer p
+{
+    text-align: right;
+    text-transform: uppercase;
+    font-size: 80%;
+    color: grey;
+    font-style: italic;
+    font-weight: bold;
+    position: relative;
+    bottom: 0px;
+}
+
+/*Login Form Style*/
+.wrap
+{
+    width: 250px;
+    height: auto;
+    margin: auto;
+    margin-top: 10%;
+}
+.avatar
+{
+    width: 100%;
+    margin: auto;
+    width: 65px;
+    border-radius: 100px;
+    height: 65px;
+    background: #448ed3;
+    position: relative;
+    bottom: -15px;
+}
+.avatar img
+{
+    width: 55px;
+    height: 55px;
+    border-radius: 100px;
+    margin: auto;
+    border: 3px solid #fff;
+    display: block;
+}
+.bar
+{
+    width: 100%;
+    height: 1px;
+    background: #fff;
+}
+.bar i
+{
+    width: 95%;
+    margin: auto;
+    height: 1px;
+    display: block;
+    background: #d1d1d1;
+}
+.wrap button
+{
+    width: 100%;
+    border-radius: 7px;
+    background: #b6ee65;
+    text-decoration: center;
+    border: none;
+    color: #51771a;
+    margin-top: -5px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    outline: none;
+    font-size: 13px;
+    border-bottom: 3px solid #307d63;
+    cursor: pointer;
+}
+
+/*MENU CSS*/
+#navigation
+{
+    /*margin: 40px 0;	*/
+    font: bold 12px/18px "Helvetica" , Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    color: #444;
+}
+
+#navigation:after
+{
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+#navigation ul
+{
+    float: right; /*border-radius: 100px;     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.07); 	-webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.07);     overflow: hidden;*/
+}
+
+#navigation li
+{
+    float: left;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #BABABA #BABABA #BABABA #FFF;
+    box-shadow: 0 1px rgba(255,255,255,1) inset;
+    -webkit-box-shadow: 0 1px rgba(255,255,255,1) inset;
+    background: #F7F7F7; /* Old browsers */
+}
+
+#navigation li:hover, #navigation li.current
+{
+    box-shadow: 0 1px rgba(255,255,255,0.2) inset;
+    -webkit-box-shadow: 0 1px rgba(255,255,255,0.2) inset;
+    border-color: #262626 !important;
+    background: #4D4D4D; /* Old browsers */
+}
+
+#navigation a
+{
+    display: block;
+    padding: 10px 15px;
+    color: #444;
+    text-decoration: none;
+    text-shadow: 0 1px #FFF;
+}
+
+#navigation a:hover, #navigation li.current a
+{
+    color: #FFF;
+    text-shadow: 0 1px #000;
+}
+
+#navigation li:first-child
+{
+    border-left-color: #BABABA;
+    border-radius: 100px 0 0 100px;
+}
+
+#navigation li:last-child
+{
+    border-radius: 0 100px 100px 0;
+}
+ul
+{
+    list-style: none;
+}

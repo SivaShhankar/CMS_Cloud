@@ -1,0 +1,8 @@
+api_version: CMSCloud
+runtime: custom
+vm: true
+threadsafe: true
+# handlers:
+#    - url: /
+#    login: required
+#   secure: always

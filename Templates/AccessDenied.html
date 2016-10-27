@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CMS</title>
+    <link rel='stylesheet' type='text/css' href='css/Index.css' />
+    <style>
+        #Login:link, #Login:visited
+        {
+            background-color: #f44336;
+            color: white;
+            padding: 14px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+        }
+        #Login:hover, #Login:active
+        {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="page">
+        <div id="logo">
+            <h1>
+                <a href="" id="logoLink">Ramarson Content Management System</a></h1>
+        </div>
+      <div id="nav">
+            <img src="images/user.png" style="width: 23px; height: 23px;" />
+            <i><b>{{.Uname}} </b></i>
+        </div>
+        <h2>
+
+            <span>ACCESS DENIED?</span></h2>
+
+            
+            <div>
+        <img src="images/Access-Denied.png">
+        <a id="Login" href="/Login" title="Click to Sign in" style="cursor: hand; text-decoration: underline;">
+            Sign in with different account</a>
+            </div>
+        <div id="footer">
+            <p>
+                Ramarson Technology Developers LLP.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
