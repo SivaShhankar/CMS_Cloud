@@ -27,41 +27,34 @@ type Info struct {
 var Login_User string
 
 // LogOutURL - Sign Out google Account and Redirect it to Home Page
-const LogOutURL = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080"
+const LogOutURL = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://cmscloud-145306.appspot.com"
 
 func Index(w http.ResponseWriter, r *http.Request) {
 
 	t, _ := template.ParseFiles("Templates/Index.html")
 	fmt.Println("Index", LoginUserInfo)
-	t.Execute(w, LoginUserInfo)
+	type info struct{ Name string }
+	t.Execute(w, info{Name: Login_User})
 }
 
 // Authorize - Validation process
 func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	var ok bool
-	fmt.Println("Session ID For Current Process", SessionID)
-	if SessionID == "" {
-		http.Redirect(w, r, LogOutURL, http.StatusFound)
-		return
-	}
-	session, err := SessionStore.New(r, SessionID)
-	if err != nil {
-		fmt.Println("-------------------------------------------")
-		fmt.Println("Error on authorize", err)
-		fmt.Println("-------------------------------------------")
-		http.Redirect(w, r, LogOutURL, http.StatusFound)
-		return
-	}
-	LoginUserInfo, ok = session.Values["UName"].(*models.UserInfo) //session.Values["UName"].(string) //getUserName(r)
-	//fmt.Println(LoginUserInfo, ok)
-	if !ok {
-		fmt.Println("-------------------------------------------")
-		fmt.Println(session.Values["UName"])
-		fmt.Println("-------------------------------------------")
-		http.Redirect(w, r, LogOutURL, http.StatusFound)
-		return
-	}
+	//var ok bool
+
+	// sessionID := GetCookieValue("ID", r)
+	// if sessionID != "" {
+	// 	fmt.Println("Session ID For Current Process", sessionID)
+	// 	Login_User = GetCookieValue("User", r)
+	// 	if Login_User == "" {
+	// 		http.Redirect(w, r, LogOutURL, http.StatusFound)
+	// 		return
+	// 	}
+
 	next(w, r)
+	// } else {
+	// 	fmt.Println("Session ID For Current Process", "No value")
+	// 	http.Redirect(w, r, LogOutURL, http.StatusFound)
+	// }
 }
 
 func validateSession(w http.ResponseWriter, r *http.Request) bool {
@@ -102,7 +95,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 			MonthOfExp: "",
 			UserMsg:    "",
 			Operation:  "Insert",
-			LoginUser:  LoginUserInfo.Name,
+			//LoginUser:  Login_User,
 		}
 		t.Execute(w, d)
 		// } else {
@@ -154,7 +147,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 			MonthOfExp: "",
 			UserMsg:    "Candidate Details Updated Successfully!",
 			Operation:  "Insert",
-			LoginUser:  LoginUserInfo.Name,
+			//LoginUser:  Login_User,
 		}
 
 		t, _ := template.ParseFiles("Templates/Upload.html")
@@ -236,6 +229,15 @@ func Filter(w http.ResponseWriter, r *http.Request) {
 	from := r.FormValue("from")
 	to := r.FormValue("to")
 
+	if filterType == "jobapplicationdate" {
+
+		// Here we need to read the value from date picker control.
+		fromString := r.FormValue("dateFrom")
+		toString := r.FormValue("dateTo")
+
+		from = fromString
+		to = toString
+	}
 	t, _ := template.ParseFiles("Templates/ViewCandidates.html")
 	candidateDetails := controllers.FilterCandidatesByRange(config.Session, filterType, from, to)
 
@@ -291,7 +293,7 @@ func Edit(h http.ResponseWriter, r *http.Request) {
 			MonthOfExp: experience[1],
 			UserMsg:    "",
 			Operation:  "Update",
-			LoginUser:  LoginUserInfo.Name,
+			//LoginUser:  Login_User,
 		}
 		t.Execute(h, d)
 	}

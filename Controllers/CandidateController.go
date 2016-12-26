@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	mgo "gopkg.in/mgo.v2"
 	bson "gopkg.in/mgo.v2/bson"
@@ -92,20 +93,32 @@ func SearchCandidatesByType(session *mgo.Session, searchType, searchValue string
 	return applicants
 }
 
+var from interface{}
+
+var to interface{}
 func FilterCandidatesByRange(session *mgo.Session, filterType, rangeFrom, rangeTo string) []models.ApplicantInfo {
 
 	var applicants []models.ApplicantInfo
 
-	from, _ := strconv.Atoi(rangeFrom)
-	to, _ := strconv.Atoi(rangeTo)
+	if filterType == "jobapplicationdate" {
+		// Here we need to read the value from date picker control.
+		from = rangeFrom
+		to = rangeTo
+
+	} else {
+
+		from, _ = strconv.Atoi(rangeFrom)
+		to, _ = strconv.Atoi(rangeTo)
+	}
 
 	dataStore := config.NewDataStore()
 
 	defer dataStore.Close()
 
-	candidates := retrieveCurrentCollection(dataStore)
+	candidates := retrieveCurrentCollection(dataStore)	
 
-	iter := candidates.C.Find(bson.M{filterType: bson.M{"$gte": from, "$lte": to}}).Sort(filterType).Iter()
+	iter := candidates.C.Find(bson.M{filterType: bson.M{"$gte": from, "$lte": to}}).Sort(filterType).Iter()	
+	
 
 	result := models.ApplicantInfo{}
 
@@ -133,15 +146,24 @@ func DeleteCandidateByMobileNumber(session *mgo.Session, mobileNumber string) er
 	return err
 }
 
+func age(birthday time.Time) int {
+	now := time.Now()
+	years := now.Year() - birthday.Year()
+	if now.YearDay() < birthday.YearDay(){
+		years--
+	}
+	return years
+}
 func SaveInfo(session *mgo.Session, r *http.Request, mode string) {
 
 	var err error
 	name := r.FormValue("name")
-	sage := r.FormValue("age")
+
 	gender := r.FormValue("gender")
 
 	sOldMobile := r.FormValue("oldMobile")
 	smobile := r.FormValue("mobile")
+	altmobile := r.FormValue("alternativeMobile")
 	email := r.FormValue("email")
 	location := r.FormValue("location")
 
@@ -149,19 +171,33 @@ func SaveInfo(session *mgo.Session, r *http.Request, mode string) {
 	specialization := r.FormValue("specialization")
 	department := r.FormValue("department")
 	jobCode := r.FormValue("jobCode")
+	jobApplicationDateString := r.FormValue("jad")
 	position := r.FormValue("position")
 	sExpMonth := r.FormValue("expMonth")
 	sExpYear := r.FormValue("expYear")
-	sourceFrom := r.FormValue("sourceFrom")
+	sourceFrom := r.FormValue("sourceFrom")	
+	impression := r.FormValue("impression")	
+	result := r.FormValue("result")	
+	dateOfBirth := r.FormValue("dob")
 
-	age, _ := strconv.Atoi(sage)
+	dateOfBirthInTime, error := time.Parse("2006-01-02", dateOfBirth)
+
+	if(error != nil){
+		panic(error)
+	}
+
+	// calculate the age from the given data of birth.
+	age := age(dateOfBirthInTime)
+	
+
+
 	mobile, _ := strconv.Atoi(smobile)
+	alternativeMobile, _ := strconv.Atoi(altmobile)
+
 	OldMobile, _ := strconv.Atoi(sOldMobile)
 	sExperience := sExpYear + "." + sExpMonth
 
 	experience, _ := strconv.ParseFloat(sExperience, 64)
-
-	fmt.Println(experience)
 
 	_, handler, err := r.FormFile("file")
 
@@ -186,19 +222,24 @@ func SaveInfo(session *mgo.Session, r *http.Request, mode string) {
 	if mode == "Insert" {
 		err = candidates.C.Insert(&models.ApplicantInfo{
 			Name:           name,
-			Age:            age,
+			DateOfBirth:    dateOfBirth,
+			Age:			age,
 			Gender:         gender,
 			Mobile:         mobile,
+			AlternativeMobile: alternativeMobile,
 			Email:          email,
 			Location:       location,
 			Qualification:  qualification,
 			Specialization: specialization,
 			Department:     department,
 			JobCode:        jobCode,
+			JobApplicationDate: jobApplicationDateString,
 			Position:       position,
 			Experience:     experience,
 			CvPath:         StoragePath,
 			SourceFrom:     sourceFrom,
+			Impression: 	impression,
+			Result:			result,
 			CloudObject:    CloudObject,
 		})
 
@@ -206,19 +247,24 @@ func SaveInfo(session *mgo.Session, r *http.Request, mode string) {
 		fmt.Println(mobile)
 		err = candidates.C.Update(bson.M{"mobile": OldMobile}, &models.ApplicantInfo{
 			Name:           name,
-			Age:            age,
+			DateOfBirth:    dateOfBirth,
+			Age:			age,
 			Gender:         gender,
 			Mobile:         mobile,
+			AlternativeMobile: alternativeMobile,
 			Email:          email,
 			Location:       location,
 			Qualification:  qualification,
 			Specialization: specialization,
 			Department:     department,
 			JobCode:        jobCode,
+			JobApplicationDate: jobApplicationDateString,
 			Position:       position,
 			Experience:     experience,
 			CvPath:         StoragePath,
 			SourceFrom:     sourceFrom,
+			Impression: 	impression,
+			Result:			result,
 			CloudObject:    CloudObject,
 		})
 	}

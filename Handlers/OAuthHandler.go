@@ -10,6 +10,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
@@ -44,7 +45,7 @@ var (
 
 	GoogleOauthConfig = &oauth2.Config{
 
-		RedirectURL:  "http://localhost:8080/GoogleCallback",
+		RedirectURL:  "https://cmscloud-145306.appspot.com/GoogleCallback",
 		ClientID:     "208027129669-01q79kp88k1roi53rguj9qluo0ce0np3.apps.googleusercontent.com",
 		ClientSecret: "hPcD4-VgM3m-mjJWAC_hcGQl",
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
@@ -123,29 +124,36 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 }
 func HandleAccessDenied(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("Sing Out")
-	var ok bool
-	if SessionID == "" {
-		http.Redirect(w, r, "/SignOut", http.StatusFound)
-		return
-	}
-	session, err := SessionStore.New(r, SessionID)
-	if err != nil {
-		http.Redirect(w, r, "/SignOut", http.StatusFound)
-		return
-	}
-	LoginUserInfo, ok = session.Values["UName"].(*models.UserInfo)
+	// sessionID := GetCookieValue("ID", r)
+	// Login_User = GetCookieValue("User", r)
+	// if Login_User != "" {
+	// 	fmt.Println("Session ID For Current Process", sessionID)
+	// 	Login_User = GetCookieValue("User", r)
 
-	if !ok {
-		http.Redirect(w, r, "/SignOut", http.StatusTemporaryRedirect)
-	} else {
+	// 	if Login_User == "" {
+	// 		http.Redirect(w, r, LogOutURL, http.StatusFound)
+	// 		return
+	// 	}
+
+	type Info struct {
+		CurrentUser string
+	}
+	d := Info{CurrentUser: "Dummy"} //Login_User
+	session, err := SessionStore.Get(r, SessionID)
+	if err == nil {
 		session.Options.MaxAge = -1 // Clear session.
 		err1 := session.Save(r, w)
 		fmt.Println("error on Accessdenied", err1)
-		t, _ := template.ParseFiles("Templates/AccessDenied.html")
-		t.Execute(w, LoginUserInfo)
 	}
-	//AppSession = nil
+	clearCurrentSession("User", w)
+	clearCurrentSession("ID", w)
+	t, _ := template.ParseFiles("Templates/AccessDenied.html")
+	t.Execute(w, d)
+	//fmt.Println("Logged User", Login_User)
+	// } else {
+	// 	http.Redirect(w, r, LogOutURL, http.StatusFound)
+	// 	return
+	// }
 
 }
 func HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
@@ -158,14 +166,12 @@ func HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignOut(w http.ResponseWriter, r *http.Request) {
-	// AppSession = nil
-	// clearSession(w)
-	fmt.Println("Sing Out")
-	if SessionID == "" {
+	sessionID := GetCookieValue("ID", r)
+	if sessionID == "" {
 		http.Redirect(w, r, LogOutURL, http.StatusFound)
 		return
 	}
-	session, err := SessionStore.New(r, SessionID)
+	session, err := SessionStore.Get(r, sessionID)
 	if err != nil {
 		http.Redirect(w, r, LogOutURL, http.StatusFound)
 		return
@@ -174,6 +180,8 @@ func SignOut(w http.ResponseWriter, r *http.Request) {
 	session.Options.MaxAge = -1 // Clear session.
 	err1 := session.Save(r, w)
 	fmt.Println("Error on Clearing Session", err1)
+	clearCurrentSession("User", w)
+	clearCurrentSession("ID", w)
 	http.Redirect(w, r, LogOutURL, http.StatusTemporaryRedirect)
 
 }
@@ -215,18 +223,53 @@ func HandleGoogleCallBack(w http.ResponseWriter, r *http.Request) {
 	isCorrect, _ := controllers.ValidateUser(config.Session, data.EMail, "")
 	fmt.Println("validting User -", isCorrect, data.EMail, config.Session)
 
+	setCookieValue("User", data.Name, w)
+	setCookieValue("ID", SessionID, w)
 	if !isCorrect {
-		// http.SetCookie(w, &http.Cookie{
-		// 	Name:    "User",
-		// 	Expires: expire,
-		// 	Value:   LoginUserInfo.EMail,
-		// })
-		http.Redirect(w, r, "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/AccessDenied", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://cmscloud-145306.appspot.com/AccessDenied", http.StatusTemporaryRedirect)
 		// AppSession = nil
 		return
 	}
 
 	http.Redirect(w, r, "/Index", http.StatusFound)
+}
+
+func setCookieValue(ParamName string, ParamValue string, response http.ResponseWriter) {
+	value := map[string]string{
+		"name": ParamValue,
+	}
+
+	if encoded, err := cookieHandler.Encode("session", value); err == nil {
+		cookie := http.Cookie{
+			Name:    ParamName,
+			Value:   encoded,
+			Path:    "/",
+			Expires: time.Now().Add(356 * 24 * time.Hour),
+		}
+		http.SetCookie(response, &cookie)
+		fmt.Println("Cookie Added")
+	}
+
+}
+
+func GetCookieValue(ParamName string, request *http.Request) (ParamValue string) {
+	if cookie, err := request.Cookie(ParamName); err == nil {
+		cookieValue := make(map[string]string)
+		if err = cookieHandler.Decode("session", cookie.Value, &cookieValue); err == nil {
+			ParamValue = cookieValue["name"]
+		}
+	}
+	return ParamValue
+}
+
+func clearCurrentSession(ParamName string, response http.ResponseWriter) {
+	cookie := http.Cookie{
+		Name:   ParamName,
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	}
+	http.SetCookie(response, &cookie)
 }
 
 //[END OAUTH PART]

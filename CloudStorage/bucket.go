@@ -54,6 +54,9 @@ func Init() {
 
 // GCloudUploadFiles - Upload files into bucket
 func GCloudUploadFiles(r *http.Request, fileName string) (string, string) {
+	if StorageService == nil {
+			return "",""
+	}
 
 	var extension = filepath.Ext(fileName)
 	var metaData string

@@ -15,7 +15,7 @@
         </div>
          <div id="nav">
             <img src="images/user.png" style="width: 23px; height: 23px;" />
-            <i><b>{{.LoginUser}} </b></i>
+            <!--<i><b>{{.LoginUser}} </b></i>-->
         </div>
         <!-- begin navigation -->
         <nav id="navigation">
@@ -37,6 +37,22 @@
             <input type="hidden" name="mode" value="{{.Operation}}" />
             <table border="0">
                 <tr>
+
+                    <td class="labels">
+                        <label>
+                            Job Code
+                        </label>
+                    </td>
+                    <td class="Fields">
+                        <input type="Text" value="{{if .BEditMode}}{{.Details.JobCode}}{{else}}{{end}}" name="jobCode"
+                            id="candidateJobCode" onkeyup="hideErrorField(this)" />
+                    </td>
+                    <td>
+                        <p id="jobCodeError" class="errors">
+                            <p>
+                                <td>
+                </tr>
+                <tr>
                     <td class="labels">
                         <label>
                             Name
@@ -55,16 +71,16 @@
                 <tr>
                     <td class="labels">
                         <label>
-                            Age
+                            DOB
                         </label>
                     </td>
                     <td class="Fields">
-                        <input type="Text" name="age" maxlength="2" value="{{if .BEditMode}}{{.Details.Age}}{{else}}{{end}}"
-                            id="candidateAge" onkeypress="return isNumberKey(event)" onkeyup="hideErrorField(this)"
+                        <input type="date" name="dob" maxlength="2" value="{{if .BEditMode}}{{.Details.DateOfBirth}}{{else}}{{end}}"
+                            id="candidateDOB" onkeypress="return isNumberKey(event)" onkeyup="hideErrorField(this)"
                             onblur="checkAgeLimit(this);" />
                     </td>
                     <td>
-                        <p id="ageError" class="errors">
+                        <p id="dobError" class="errors">
                             <p>
                                 <td>
                 </tr>
@@ -82,6 +98,7 @@
                         </select>
                     </td>
                 </tr>
+
                 <tr>
                     <td class="labels">
                         <label>
@@ -99,6 +116,26 @@
                             <p>
                                 <td>
                 </tr>
+
+                <tr>
+
+                    <td class="labels">
+                        <label>
+                            Alternative Mobile
+                        </label>
+                    </td>
+                    <td class="Fields">
+                        <input type="Text" name="alternativeMobile" value="{{if .BEditMode}}{{.Details.AlternativeMobile}}{{else}}{{end}}"
+                            id="candidateAlternateMobile" onkeypress="return isNumberKey(event)" onkeyup="hideErrorField(this)"
+                            onblur="checkAlternativeMobileNumberLimit(this)" />
+                        <input type="hidden" value="{{if .BEditMode}}{{.Details.AlternativeMobile}}{{else}}{{end}}">
+                    </td>
+                    <td>
+                        <p id="altMobileError" class="errors">
+                            <p>
+                                <td>
+                </tr>
+
                 <tr>
                     <td class="labels">
                         <label>
@@ -181,22 +218,36 @@
                             <option>Marketing</option>
                         </select>
                     </td>
-                </tr>
+                </tr>               
+
                 <tr>
+
+
                     <td class="labels">
                         <label>
-                            Job Code
+                            Job Application Date
+
                         </label>
                     </td>
-                    <td class="Fields">
-                        <input type="Text" value="{{if .BEditMode}}{{.Details.JobCode}}{{else}}{{end}}" name="jobCode"
-                            id="candidateJobCode" onkeyup="hideErrorField(this)" />
+                     <td class="Fields">
+                        <input 
+                        type="date"
+                        name="jad" 
+                        value="{{if .BEditMode}}{{.Details.JobApplicationDate}}{{else}}{{end}}"
+                        id="jobApplicationDate"
+                        onkeypress="return isNumberKey(event)" 
+                        onkeyup="hideErrorField(this)" 
+                        onblur="checkAgeLimit(this);"/>
                     </td>
+
                     <td>
-                        <p id="jobCodeError" class="errors">
-                            <p>
-                                <td>
+                        <p id="JADError" class="errors">
+                        <p>
+                    <td>
                 </tr>
+
+
+
                 <tr>
                     <td class="labels">
                         <label>
@@ -245,7 +296,7 @@
                         {{else}}
                         <input type="file" name="file" id="candidateCV" onchange="hideErrorField(this)" />
                         {{end}}
-                        <input type="hidden" name="cloudobject" value="{{if .BEditMode}}{{.Details.CloudObject}}{{else}}{{end}}" />						
+						<input type="hidden" name="cloudobject" value="{{if .BEditMode}}{{.Details.CloudObject}}{{else}}{{end}}" />	
                     </td>
                     <td>
                         <p id="fileError" class="errors">
@@ -260,8 +311,10 @@
                     </td>
                     <td class="Fields">
                         <input type="hidden" name="sourceFromValue" id="sourceFromValue" value="{{if .BEditMode}}{{.Details.SourceFrom}}{{else}}{{end}}" />
-                        <select name="sourceFrom" id="sourceFrom">
-                            <option>Naukuri</option>
+                        <select name="sourceFrom" id="sourceFrom" value="{{if .BEditMode}}{{.Details.SourceFrom}}{{else}}{{end}}">
+                            <option>Naukri</option>
+
+
                             <option>TimeJobs</option>
                             <option>Indeed</option>
                             <option>LinkedIn</option>
@@ -270,12 +323,47 @@
                             <option>Browsing</option>
                             <option>Mail</option>
                         </select>
-                    </td>
-                    <td>
-                        <p id="sourceFromError" class="errors">
-                            <p>
-                                <td>
+                    </td>                    
                 </tr>
+
+                <tr>
+                    <td class="labels">
+                        <label>
+                            Impression
+                        </label>
+                    </td>
+                    <td class="Fields">
+                        <input type="hidden" name="impressionValue" id="impressionValue" value="{{if .BEditMode}}{{.Details.Impression}}{{else}}{{end}}" />
+                        <select name="impression" id="impression" value="{{if .BEditMode}}{{.Details.Impression}}{{else}}{{end}}">
+                            <option>Good</option>
+                            <option>Bad</option>
+                            <option>Fair</option>
+                            <option>Very Impressive</option>
+                        </select>
+                    </td>                   
+                </tr>
+
+                <tr>
+                    <td class="labels">
+                        <label>
+                            Result
+                        </label>
+                    </td>
+                    <td class="Fields">
+                        <input type="hidden" name="resultValue" id="resultValue" value="{{if .BEditMode}}{{.Details.Result}}{{else}}{{end}}" />
+                        <select name="result" id="result" value="{{if .BEditMode}}{{.Details.Result}}{{else}}{{end}}">
+                            <option>Selected</option>
+                            <option>Rejected</option>
+                            <option>Wait list</option>
+                            <option>Future reference</option>
+                        </select>
+                    </td>
+
+
+
+
+                </tr>
+
                 <tr>
                     <td class="labels">
                         <input type="hidden" name="token" value="sfsdf" />
@@ -295,29 +383,37 @@
 
     <script type="text/javascript">
 
-		var DeptValue = document.getElementById("DeptValue").value;
-  		var GenderValue   = document.getElementById("GenderValue").value;
-  		var QualValue= document.getElementById("QualValue").value;  
-		var SourceFromValue= document.getElementById("sourceFromValue").value;  		
+		var deptValue = document.getElementById("DeptValue").value;
+  		var genderValue   = document.getElementById("GenderValue").value;
+  		var qualValue= document.getElementById("QualValue").value;  
+		var sourceFromValue= document.getElementById("sourceFromValue").value; 
+        var impressionValue= document.getElementById("impressionValue").value; 	
+        var resultValue= document.getElementById("resultValue").value;	
 
 		$(document).ready(function () {			   
-			if(DeptValue !=""){ setSelectBoxByText("department",DeptValue);}
- 			if(GenderValue !=""){ setSelectBoxByText("gender",GenderValue);}
-   			if(QualValue !=""){ setSelectBoxByText("qualification",QualValue);}
-			if(QualValue !=""){ setSelectBoxByText("sourceFrom",SourceFromValue);}
+			if(deptValue !=""){ setSelectBoxByText("department",deptValue);}
+ 			if(genderValue !=""){ setSelectBoxByText("gender",genderValue);}
+   			if(qualValue !=""){ setSelectBoxByText("qualification",qualValue);}
+			if(sourceFromValue !=""){ setSelectBoxByText("sourceFrom",sourceFromValue);}
+            if(impressionValue !=""){ setSelectBoxByText("impression",impressionValue);}
+             if(resultValue !=""){ setSelectBoxByText("result",resultValue);}	
+            
 		});
 
 		function setDefault()
-		{	
+		{
+
 			document.getElementById("nameError").innerHTML="*";
-			document.getElementById("ageError").innerHTML="*";
+			document.getElementById("dobError").innerHTML="*";
 			document.getElementById("mobileError").innerHTML="*";
 			document.getElementById("emailError").innerHTML="*";
 			document.getElementById("locationError").innerHTML="*";
 			document.getElementById("specializationError").innerHTML="*";
 			document.getElementById("jobCodeError").innerHTML="*";
 			document.getElementById("positionError").innerHTML="*";
-			document.getElementById("fileError").innerHTML="";				
+			document.getElementById("fileError").innerHTML="";		
+            document.getElementById("JADError").innerHTML="*";	
+           
 		}
 
 		function hideSuccessMessage()
@@ -334,10 +430,11 @@
   		}
 		
 		function isNumberKey(evt)
-       	{
+       	{               
+
           var charCode = (evt.which) ? evt.which : evt.keyCode;
 
-          if ((charCode > 48 && charCode < 57) ||  charCode == 8)
+          if ((charCode >= 48 && charCode <= 57) ||  charCode == 8)
 		  {
 			 return true;
 		  }
@@ -389,14 +486,34 @@
 			}			
 		}
 
-		function checkAgeLimit(event)
+        function checkAlternativeMobileNumberLimit(event)
+
 		{
-			if(event.value != "" && event.value <20 || event.value >50)
-			{
-				document.getElementById("ageError").innerHTML="Age is not valid !";
-				return false;
-			}	
-			return true;		
+			var mobileNumber = event.value;
+            if(mobileNumber != "")
+            {
+                // While editing it will be '0', in this case we can ignore to display the error in UI, becuase its an optional field.
+                if(mobileNumber.length == 1 && mobileNumber == 0)
+                {
+                    return true;
+                }
+
+                if(mobileNumber.length <10 || mobileNumber.length >10)
+			    {
+
+
+				    document.getElementById("altMobileError").innerHTML="Alt.Mobile Number is not valid !";
+				    return false;
+			    }
+
+                return true;
+            }
+            else
+            {
+
+
+                return true;	
+            }	
 		}
 
 		function checkMobileNumberLimit(event)
@@ -407,6 +524,7 @@
 				document.getElementById("mobileError").innerHTML="Mobile Number is not valid !";
 				return false;
 			}
+
 			return true;		
 		}
 
@@ -431,8 +549,10 @@
 		function validateFields()
 		{
 			const CandidateName = "candidateName";
-			const CandidateAge = "candidateAge";
+			const CandidateDOB = "candidateDOB";
+
 			const CandidateMobile = "candidateMobile";
+            const CandidateAlternateMobile = "candidateAlternateMobile";
 			const CandidateEmail = "candidateEmail";
 			const CandidateLocation = "candidateLocation";
 			const CandidateJobCode="candidateJobCode";
@@ -440,14 +560,18 @@
 			const CandidatePosition = "candidatePosition";
 			const CandidateCV = "candidateCV";
 			const CandidateCVText="uploadedFile";
+            const JonApplicationDate="jobApplicationDate";
 
 			var name = isAnEmptyField(document.getElementById(CandidateName), "nameError", "Please enter candidate name !");	
 
-			var age = isAnEmptyField(document.getElementById(CandidateAge), "ageError", "Please enter candidate age !");			
-			var ageLimit= checkAgeLimit(document.getElementById(CandidateAge));
+			var age = isAnEmptyField(document.getElementById(CandidateDOB), "dobError", "Please select candidate DOB !");			
+			
+
 
 			var mobile = isAnEmptyField(document.getElementById(CandidateMobile), "mobileError", "Please enter candidate mobile number !");
 			var mobileNoLimit= checkMobileNumberLimit(document.getElementById(CandidateMobile));
+
+            var altmobileNoLimit= checkAlternativeMobileNumberLimit(document.getElementById(CandidateAlternateMobile));
 
 			var email = isAnEmptyField(document.getElementById(CandidateEmail), "emailError", "Please enter candidate email !");
 			var emailFormat=checkEmailFormat(document.getElementById(CandidateEmail));
@@ -462,19 +586,26 @@
 			
 			var file = isFileFieldEmpty(document.getElementById(CandidateCV),document.getElementById(CandidateCVText), "fileError", "Please select candidate CV !");
 
+            var jad = isAnEmptyField(document.getElementById(JonApplicationDate), "JADError", "Please select Job Application Date !");			
+		
 
 			if(!name){								
 				setFocusOnElement(CandidateName);
 				return false;
 			 } 
-			 else if(!age || !ageLimit)
+			 else if(!age)
 			 {				
-				setFocusOnElement(CandidateAge);
+				setFocusOnElement(CandidateDOB);
 				return false;
 			 } 
 			 else if(!mobile || !mobileNoLimit)
 			 {				
 				setFocusOnElement(CandidateMobile);
+				return false;
+			} 
+             else if(!altmobileNoLimit)
+			 {				
+				setFocusOnElement(CandidateAlternateMobile);
 				return false;
 			} 
 			else if(!email || !emailFormat)
@@ -492,6 +623,11 @@
 				setFocusOnElement(CandidateJobCode);
 				return false;
 			}
+            else if(!JonApplicationDate)
+            {
+                setFocusOnElement(JonApplicationDate)
+                return false;
+            }
 			else if(!specialization)
 			{
 				setFocusOnElement(CandidateSpecialization);

@@ -57,16 +57,19 @@
                     <div id="filterFieldsWrapper">
                         <label id="filterLabel">
                             Filter By</label>
-                        <select name="filterType" id="filterType">
+                        <select name="filterType" id="filterType" onchange="change(this)">
                             <option value="age">Age</option>
                             <option value="experience">Experience</option>
+                             <option value="jobapplicationdate">JobApplicationDate</option>
                         </select>
                         <label id="fromLabel">
                             From</label>
                         <input type="number" name="from" id="from" min="0" max="50" value="0" />
+                         <input type="date" name="dateFrom" id="dateFrom" style="display: none; width: 130px; float: left; margin-left:5px; height:30px"/>
                         <label id="toLabel">
                             To</label>
                         <input type="number" name="to" id="to" min="0" max="50" value="0" />
+                        <input type="date"  name="dateTo" id="dateTo" style="display: none; width: 130px; float: left; margin-left:5px; height:30px"/>
                         <input type="submit" id="filterButton" value="" style="background-image: url(/images/filter.png)"
                             title="click to filter" />
                     </div>
@@ -74,7 +77,7 @@
                 </div>
                 <div id="tableDiv">
                     <table id="tblData">
-                        <tr style="background-color: Orange;">
+                        <tr style="background-color: orange;">
                             <th id="viewHeader">
                             </th>
                             <th id="editHeader">
@@ -82,7 +85,13 @@
                             <th id="deleteHeader">
                             </th>
                             <th>
+                                Job Code
+                            </th>
+                            <th>
                                 Name
+                            </th>
+                            <th style="width:70px;">
+                                Date Of Birth
                             </th>
                             <th>
                                 Age
@@ -92,6 +101,9 @@
                             </th>
                             <th>
                                 Mobile
+                            </th>
+                            <th>
+                                Alternative Mobile
                             </th>
                             <th>
                                 E-mail
@@ -107,12 +119,16 @@
                             </th>
                             <th>
                                 Department
+                            </th>                            
+                             <th>
+                                Job Application Date
                             </th>
                             <th>
-                                Job Code
-                            </th>
-                            <th>
-                                Position Apply For
+                                Position Applied For
+
+
+
+
                             </th>
                             <th>
                                 Experience
@@ -122,6 +138,12 @@
                             </th>
                             <th>
                                 Source From
+                            </th>
+                             <th>
+                                Impression
+                            </th>
+                             <th>
+                                Result
                             </th>
                         </tr>
                         {{range .}}
@@ -147,17 +169,27 @@
                                     <input type="hidden" name="hiddenField" value="{{.Mobile}}" />
                                 </div>
                             </td>
+                             <td>
+                                {{.JobCode}}
+                            </td>
                             <td>
                                 {{.Name}}
                             </td>
                             <td>
-                                {{.Age}}
+                               {{.DateOfBirth}}
+                            </td>
+                             <td>
+                               {{.Age}}
+
                             </td>
                             <td>
                                 {{.Gender}}
                             </td>
                             <td>
                                 {{.Mobile}}
+                            </td>
+                             <td>
+                                {{.AlternativeMobile}}
                             </td>
                             <td>
                                 {{.Email}}
@@ -173,9 +205,11 @@
                             </td>
                             <td>
                                 {{.Department}}
-                            </td>
+                            </td>                           
+
                             <td>
-                                {{.JobCode}}
+                                {{.JobApplicationDate}}
+
                             </td>
                             <td>
                                 {{.Position}}
@@ -188,6 +222,12 @@
                             </td>
                             <td>
                                 {{.SourceFrom}}
+                            </td>
+                             <td>
+                                {{.Impression}}
+                            </td>
+                             <td>
+                                {{.Result}}
                             </td>
                         </tr>
                         {{end}}
@@ -207,6 +247,35 @@
 
         var modal = document.getElementById('myModal');
 		var span = document.getElementsByClassName("ClosePopup")[0];
+
+        function change(obj) 
+        {
+            var selectBox = obj;
+            var selected = selectBox.options[selectBox.selectedIndex].value;
+
+            var fromArea = document.getElementById("from");
+            var toArea = document.getElementById("to");
+
+            var dateFrom = document.getElementById("dateFrom");
+            var dateTo = document.getElementById("dateTo");
+
+            if(selected === "jobapplicationdate")
+            {
+                fromArea.style.display = "none";
+                toArea.style.display = "none";
+
+                dateFrom.style.display = "block";
+                dateTo.style.display = "block";             
+            }
+            else
+            {
+                fromArea.style.display = "block";
+                toArea.style.display = "block";
+
+                dateFrom.style.display = "none";
+                dateTo.style.display = "none";
+            }
+        }
 
         // When the user clicks on <span> (x), close the modal
         span.onclick = function () {
@@ -228,8 +297,8 @@
 			
                 var contentId = $(this).attr('id');
                 var iFrame = document.getElementById("doc");
-                $("#doc").attr('src', contentId); 		
-                //alert(contentId);		
+                $("#doc").attr('src', contentId); 				
+
                 if (contentId.split('.').pop() == 'pdf') 
 				{
                     modal.style.display = "block";
